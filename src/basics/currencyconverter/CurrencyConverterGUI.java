@@ -1,6 +1,7 @@
 package basics.currencyconverter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,6 +13,7 @@ public class CurrencyConverterGUI {
 
     private JLabel rsLabel;
 
+    private JButton convertBtn;
 
     public void createGUI() {
         window = new JFrame();
@@ -25,11 +27,11 @@ public class CurrencyConverterGUI {
         label1.setBounds(30, 10, 200, 20);
         audField = new JTextField();
         audField.setBounds(200,10,100, 25);
-        JButton convertBtn = new JButton("CONVERT");
+        convertBtn = new JButton("CONVERT");
         convertBtn.setBounds(100, 40, 100,20);
         convertBtn.addActionListener(event -> convert());
         rsLabel = new JLabel();
-        rsLabel.setBounds(30,70, 100,20);
+        rsLabel.setBounds(30,70, 200,20);
 
 
 
@@ -41,11 +43,21 @@ public class CurrencyConverterGUI {
     }
 
     public void convert() {
-        String audValueStr = audField.getText();
-        Double audValue = Double.parseDouble(audValueStr);
-        Double nrsValue = Converter.convertAudToNrs(audValue);
-        rsLabel.setText("NRS = " + nrsValue.toString());
-//         JOptionPane.showMessageDialog(window, "Button Clicked", "Message", JOptionPane.ERROR_MESSAGE);
+        if (!audField.getText().trim().isEmpty()) {
+            String audValueStr = audField.getText();
+            Double audValue = 0.0;
+            try {
+                audValue = Double.parseDouble(audValueStr);
+            } catch(NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(window,"Please enter a valid number", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            Double nrsValue = Converter.convertAudToNrs(audValue);
+            rsLabel.setText("NRS = " + nrsValue.toString());
+        } else {
+            JOptionPane.showMessageDialog(window, "Empty", "Message", JOptionPane.ERROR_MESSAGE);
+        }
+        
+//        JOptionPane.showMessageDialog(window, "Button Clicked", "Message", JOptionPane.ERROR_MESSAGE);
     }
     public static void main(String[] args) {
         CurrencyConverterGUI converter = new CurrencyConverterGUI();
