@@ -1,71 +1,109 @@
 package basics.citizenship;
 
 import javax.swing.*;
-import java.awt.datatransfer.StringSelection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 public class CitizenshipGUI {
 
 
     private JFrame window;
 
-    private JButton submit;
+    private JLabel nameLabel;
 
-    private JButton clear;
+    private JLabel yearLabel;
 
-    private JTextField name;
+    private JLabel provinceLabel;
 
-    private JTextField year;
+    private JButton submitBtn;
 
-    private JComboBox box;
+    private JButton clearBtn;
+
+    private JTextField tfName;
+
+    private JTextField tfYear;
+
+    private JComboBox provinceCB;
+
+    private String[] provinces = {"Bagmati Province","Koshi Province","Madhesh Province", "Gandaki Province", "Lumbini Province", "Kanali Province", "Sudurpashchim Province"};
+
 
     public void createGUI() {
         window = new JFrame("Citizenship Check");
-        window.setSize(300,250);
+        window.setSize(350,250);
         window.setResizable(false);
         window.setLocation(200,200);
         window.setLayout(null);
 
-        JLabel label = new JLabel("Name : ");
-        label.setBounds(20,20,50,20);
-        name = new JTextField();
-        name.setBounds(100,20, 150,20);
-        JLabel label1 = new JLabel("Year of birth : ");
-        label1.setBounds(20,60,100,20);
-        year = new JTextField();
-        year.setBounds(100,60,150,20);
-        JLabel label2 = new JLabel("Province :");
-        label2.setBounds(20,100, 100, 20);
-        String[] provinces = {"Bagmati Province","Koshi Province","Madhesh Province", "Gandaki Province", "Lumbini Province", "Kanali Province", "Sudurpashchim Province"};
-        box = new JComboBox(provinces);
-        box.setBounds(100, 100, 150, 20);
-        submit = new JButton("Submit");
-        submit.setBounds(10,150, 100,20);
-        submit.addActionListener(event -> button1());
-        clear = new JButton("Clear");
-        clear.setBounds(120,150,100, 20);
-        clear.addActionListener(event -> button2());
+        nameLabel = new JLabel("Name : ");
+        nameLabel.setBounds(20,20,50,20);
+        tfName = new JTextField();
+        tfName.setBounds(100,20, 200,20);
+        yearLabel = new JLabel("Date of birth : ");
+        yearLabel.setBounds(20,60,100,20);
+        tfYear = new JTextField();
+        tfYear.setToolTipText("yyyy-mm-dd");
+        tfYear.setBounds(100,60,200,20);
+        provinceLabel = new JLabel("Province :");
+        provinceLabel.setBounds(20,100, 100, 20);
+        provinceCB = new JComboBox(provinces);
+        provinceCB.setBounds(100, 100, 200, 20);
+        submitBtn = new JButton("Submit");
+        submitBtn.setBounds(60,150, 100,20);
+        submitBtn.addActionListener(event -> submit());
+        clearBtn = new JButton("Clear");
+        clearBtn.setBounds(180,150,100, 20);
+        clearBtn.addActionListener(event -> clear());
 
 
-        window.add(box);
-        window.add(clear);
-        window.add(submit);
-        window.add(label2);
-        window.add(year);
-        window.add(label1);
-        window.add(name);
-        window.add(label);
+        window.add(provinceCB);
+        window.add(clearBtn);
+        window.add(submitBtn);
+        window.add(provinceLabel);
+        window.add(tfYear);
+        window.add(yearLabel);
+        window.add(tfName);
+        window.add(nameLabel);
         window.setVisible(true);
     }
 
-    public void button1() {
-            JOptionPane.showMessageDialog(window, "The following Information has been successfully submitted", "Submit", JOptionPane.INFORMATION_MESSAGE);
+    public void submit() {
+        JOptionPane.showMessageDialog(window, "The following Information has been successfully submitted", "Submit", JOptionPane.INFORMATION_MESSAGE);
+        processCitizenship();
     }
 
-    public void button2() {
-        name.setText(null);
-        year.setText(null);
-        box.setSelectedIndex(0);
+    public void clear() {
+        tfName.setText(null);
+        tfYear.setText(null);
+        provinceCB.setSelectedIndex(0);
         JOptionPane.showMessageDialog(window, "The information has been cleared", "Clear", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void processCitizenship() {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String inputDate = tfYear.getText().trim();
+            LocalDate birthDate = LocalDate.parse(inputDate, formatter);
+            LocalDate currentDate = LocalDate.now();
+            long age = ChronoUnit.YEARS.between(birthDate,currentDate);
+            String name = tfName.getText().trim();
+//            String province = provinceCB.getSelectedItem().toString();
+            String provinceValue = provinces[provinceCB.getSelectedIndex()];
+
+
+
+            if (age > 16) {
+                JOptionPane.showMessageDialog(window, "Congratulation! " + name + " You are " + age + " years old and are eligible for citizenship.", "Check", JOptionPane.INFORMATION_MESSAGE);
+            } else if (age == 16) {
+                JOptionPane.showMessageDialog(window, "Hi " + name + ", we need to manually verify your age. Please go to the office of " + provinceValue + " province", "Check", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(window, "Sorry! " + name + " are " + age + " years old and are not eligible for citizenship.", "error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (DateTimeParseException dtpe) {
+            JOptionPane.showMessageDialog(window,"The following is invalid", "error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
