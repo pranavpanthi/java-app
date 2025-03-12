@@ -2,6 +2,14 @@ package basics.citizenship;
 
 import javax.swing.*;
 import java.awt.datatransfer.StringSelection;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 public class CitizenshipGUI {
 
@@ -32,6 +40,7 @@ public class CitizenshipGUI {
         JLabel label1 = new JLabel("Year of birth : ");
         label1.setBounds(20,60,100,20);
         year = new JTextField();
+        year.addActionListener(event -> date());
         year.setBounds(100,60,150,20);
         JLabel label2 = new JLabel("Province :");
         label2.setBounds(20,100, 100, 20);
@@ -58,7 +67,8 @@ public class CitizenshipGUI {
     }
 
     public void button1() {
-            JOptionPane.showMessageDialog(window, "The following Information has been successfully submitted", "Submit", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(window, "The following Information has been successfully submitted", "Submit", JOptionPane.INFORMATION_MESSAGE);
+        date();
     }
 
     public void button2() {
@@ -66,6 +76,26 @@ public class CitizenshipGUI {
         year.setText(null);
         box.setSelectedIndex(0);
         JOptionPane.showMessageDialog(window, "The information has been cleared", "Clear", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void date() {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String inputDate =year.getText().trim();
+            LocalDate birthDate = LocalDate.parse(inputDate, formatter);
+            LocalDate currentDate = LocalDate.now();
+            long age = ChronoUnit.YEARS.between(birthDate,currentDate);
+
+            if (age > 16) {
+                JOptionPane.showMessageDialog(window, "Congratulation! You are eligible for citizenship.", "Check", JOptionPane.INFORMATION_MESSAGE);
+            } else if (age == 16) {
+                JOptionPane.showMessageDialog(window, "You are just eligible to have a citizenship.", "Check", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(window, "Sorry! You are not eligible to have citizenship.", "Check", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (DateTimeParseException dtpe) {
+            JOptionPane.showMessageDialog(window,"The following is invalid", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
