@@ -38,16 +38,16 @@ public class CitizenshipGUI {
         window.setLayout(null);
 
         nameLabel = new JLabel("Name : ");
-        nameLabel.setBounds(20,20,50,20);
+        nameLabel.setBounds(10,20,50,20);
         tfName = new JTextField();
         tfName.setBounds(100,20, 200,20);
         yearLabel = new JLabel("Date of birth : ");
-        yearLabel.setBounds(20,60,100,20);
+        yearLabel.setBounds(10,60,100,20);
         tfYear = new JTextField();
         tfYear.setToolTipText("yyyy-mm-dd");
         tfYear.setBounds(100,60,200,20);
         provinceLabel = new JLabel("Province :");
-        provinceLabel.setBounds(20,100, 100, 20);
+        provinceLabel.setBounds(10,100, 100, 20);
         provinceCB = new JComboBox(provinces);
         provinceCB.setBounds(100, 100, 200, 20);
         submitBtn = new JButton("Submit");
@@ -102,7 +102,7 @@ public class CitizenshipGUI {
                 JOptionPane.showMessageDialog(window, "Sorry! " + name + " are " + age + " years old and are not eligible for citizenship.", "error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (DateTimeParseException dtpe) {
-            JOptionPane.showMessageDialog(window,"The following is invalid", "error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(window,"The Date is in invalid form", "error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
