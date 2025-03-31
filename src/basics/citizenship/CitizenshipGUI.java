@@ -1,6 +1,7 @@
 package basics.citizenship;
 
 import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -52,9 +53,11 @@ public class CitizenshipGUI {
         provinceCB.setBounds(100, 100, 200, 20);
         submitBtn = new JButton("Submit");
         submitBtn.setBounds(60,150, 100,20);
+        submitBtn.setBackground(Color.green);
         submitBtn.addActionListener(event -> submit());
         clearBtn = new JButton("Clear");
         clearBtn.setBounds(180,150,100, 20);
+        clearBtn.setBackground(Color.red);
         clearBtn.addActionListener(event -> clear());
 
 
@@ -75,10 +78,13 @@ public class CitizenshipGUI {
     }
 
     public void clear() {
-        tfName.setText(null);
-        tfYear.setText(null);
-        provinceCB.setSelectedIndex(0);
-        JOptionPane.showMessageDialog(window, "The information has been cleared", "Clear", JOptionPane.INFORMATION_MESSAGE);
+        int conformation = JOptionPane.showConfirmDialog(window, "Are you sure you want to clear the form?", "Confirm Cleaar",JOptionPane.YES_NO_OPTION);
+        if (conformation == JOptionPane.YES_OPTION) {
+            tfName.setText(null);
+            tfYear.setText(null);
+            provinceCB.setSelectedIndex(0);
+            JOptionPane.showMessageDialog(window, "The information has been cleared", "Clear", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     public void processCitizenship() {
