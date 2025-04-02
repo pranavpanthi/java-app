@@ -1,14 +1,11 @@
 package basics.currencyconverter;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class CurrencyConverterGUI {
 
     private JFrame window;
-    private JTextField audField;
+    private JTextField amountField;
 
     private JLabel rsLabel;
 
@@ -16,11 +13,11 @@ public class CurrencyConverterGUI {
 
     private JComboBox currencyFromJB;
 
-    private String[] currFrom = {"Nepali Rupees", "Indian Rupees", "USD", "AUD"};
+    private String[] currencies = {"Nepali Rupees", "Indian Rupees", "USD", "AUD"};
 
     private JComboBox currencyToJB;
 
-    private String[] currTo = {"Nepali Rupees", "Indian Rupees", "USD", "AUD"};
+    private String[] currencyCodes = {"NPR", "INR", "USD", "AUD"};
 
     public void createGUI() {
         window = new JFrame();
@@ -32,27 +29,29 @@ public class CurrencyConverterGUI {
 
         JLabel label1 = new JLabel("Currency from : ");
         label1.setBounds(30, 10, 200, 20);
-        currencyFromJB = new JComboBox(currFrom);
+        currencyFromJB = new JComboBox(currencies);
         currencyFromJB.setBounds(140, 10, 180, 20);
+
         JLabel label2 = new JLabel("Currency to :");
         label2.setBounds(30,40,100,20);
-        currencyToJB = new JComboBox(currTo);
+        currencyToJB = new JComboBox(currencies);
         currencyToJB.setBounds(140,40,180,20);
+
         JLabel amount = new JLabel("Amount :");
         amount.setBounds(30,70,100,20);
-        audField = new JTextField();
-        audField.setBounds(140,70,100, 20);
+        amountField = new JTextField();
+        amountField.setBounds(140,70,100, 20);
+
         convertBtn = new JButton("CONVERT");
         convertBtn.setBounds(120, 100, 100,20);
         convertBtn.addActionListener(event -> convert());
+
         rsLabel = new JLabel();
         rsLabel.setBounds(120,130, 200,20);
 
 
-
-
         window.add(label1);
-        window.add(audField);
+        window.add(amountField);
         window.add(convertBtn);
         window.add(rsLabel);
         window.add(currencyFromJB);
@@ -63,23 +62,30 @@ public class CurrencyConverterGUI {
     }
 
     public void convert() {
-            if (!audField.getText().trim().isEmpty()) {
-                String audValueStr = audField.getText();
-                Double audValue = 0.0;
+        String fromCurrency = (String) currencyFromJB.getSelectedItem();
+        String toCurrency = (String) currencyToJB.getSelectedItem();
+        double amount;
+
+            if (!amountField.getText().trim().isEmpty()) {
                 try {
-                    audValue = Double.parseDouble(audValueStr);
+                    amount = Double.parseDouble(amountField.getText());
                 } catch (NumberFormatException nfe) {
                     JOptionPane.showMessageDialog(window, "Please enter a valid number", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-                Double nrsValue = Converter.convertAudToNrs(audValue);
-                rsLabel.setText("NRS = " + nrsValue.toString());
 
-                Double usdValue =  Converter.convertAudToUsd(audValue);
-                rsLabel.setText("USD = " + usdValue.toString());
+                int fromIndex = currencyFromJB.getSelectedIndex();
+                int toIndex = currencyToJB.getSelectedIndex();
+                String fromCode = currencyCodes[fromIndex];
+                String toCode = currencyCodes[toIndex];
 
-                Double irsValue = Converter.convertAudToIrs(audValue);
-                rsLabel.setText("IRS = " + irsValue.toString());
+                double convertedValue = Converter.convert(fromCode, toCode, amount);
 
+                if (convertedValue != -1) {
+                    rsLabel.setText(String.format("%.2f %s", convertedValue, toCode));
+                } else {
+                    JOptionPane.showMessageDialog(window, "Enter an amount!", "Message", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(window, "Empty", "Message", JOptionPane.ERROR_MESSAGE);
             }
